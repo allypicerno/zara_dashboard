@@ -1,13 +1,12 @@
 import pandas as pd
 from dash import Dash, dcc, html, Input, Output
 import plotly.graph_objects as go
-#pip install xlrd
-#DELETE THIS
+# pip install xlrd
+
 df = pd.read_excel('fashion_data_2018_2022.xls')
 df = df[['price', 'year_of_sale', 'category', 'average_rating', 'age_group', 'gender']].dropna()
 
 
-print('hi how are you')
 
 # Create Dash app
 app = Dash(__name__)
