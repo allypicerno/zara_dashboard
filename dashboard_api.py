@@ -6,6 +6,7 @@ pip install xlrd
 df = pd.read_excel('fashion_data_2018_2022.xls')
 df = df[['price', 'year_of_sale', 'category', 'average_rating', 'age_group', 'gender']].dropna()
 
+print(df.head())
 
 # Create Dash app
 app = Dash(__name__)
@@ -20,17 +21,21 @@ app.layout = html.Div([
         value=df['category'].unique()[0],
         clearable=True
     ),
-    dcc.Graph(id='graph')
+    dcc.Graph(id='graph'),
+    dcc.RadioItems(id='radio', options=[{'label': 'Male', 'value': 'Male'}, {'label': 'Female', 'value': 'Female'}],
+                   value='Male')
 ])
 
 # Define callback to update the graph
 @app.callback(
     Output('graph', 'figure'),
-    [Input('dropdown', 'value')]
+    [Input('dropdown', 'value')],
+    [Input('radio', 'value' )]
 )
-def update_graph(selected_category):
+def update_graph(selected_category, selected_gender):
     filtered_data = df[df['category'] == selected_category]
-    data = filtered_data.groupby('year_of_sale')['price'].mean().reset_index()
+    data = filtered_data[filtered_data['gender'] == selected_gender]
+    data = data.groupby('year_of_sale')['price'].mean().reset_index()
 
     years = data['year_of_sale']
     prices = data['price']
